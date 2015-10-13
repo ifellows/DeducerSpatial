@@ -1,0 +1,34 @@
+#!/bin/sh
+mkdir tmp
+cp -r DeducerSpatial tmp
+
+
+javac -target 1.5 -source 1.5 -d . -classpath org/JavaGD.jar:org/JRI.jar:org/JGR.jar:org/deducer.jar org/rosuda/javaGD/*.java
+jar fc jgd.jar org/rosuda/javaGD/*.class
+mv jgd.jar tmp/DeducerSpatial/inst/java/jgd.jar
+rm org/rosuda/javaGD/*.class
+
+javac -target 1.5 -source 1.5 -d . -classpath org/JavaGD.jar:org/JRI.jar:org/JGR.jar:org/deducer.jar:org/JMapViewer.jar:tmp/DeducerSpatial/inst/java/jgd.jar edu/cens/spatial/*.java edu/cens/spatial/plots/*.java edu/cens/spatial/plots/components/*.java edu/cens/spatial/plots/widgets/*.java
+jar fc spatial.jar edu/cens/spatial/plots/icons edu/cens/spatial/*.class edu/cens/spatial/plots/*.class edu/cens/spatial/plots/components/*.class edu/cens/spatial/plots/widgets/*.class
+rm edu/cens/spatial/*.class edu/cens/spatial/plots/*.class edu/cens/spatial/plots/components/*.class edu/cens/spatial/plots/widgets/*.class
+mv spatial.jar tmp/DeducerSpatial/inst/java/spatial.jar
+
+cp -r edu tmp/DeducerSpatial/java
+cp -r org tmp/DeducerSpatial/java
+rm tmp/DeducerSpatial/java/org/*.jar
+
+
+cd tmp/DeducerSpatial
+VER=`sed -n 's/^Version:.\([0-9.-]\{1,\}\).*/\1/p' DESCRIPTION`
+cd ..
+
+if [ -z "$VER" ]; then
+    echo "ERROR: invalid version in DESCRIPTION"
+    exit 1
+fi
+
+cd ..
+R CMD build DeducerSpatial
+#cp tmp/DeducerSpatial_${VER}.tar.gz .
+
+rm -rf tmp
