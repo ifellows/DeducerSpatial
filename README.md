@@ -12,7 +12,7 @@ Get the released version from CRAN:
 ```R
 install.packages("Deducer")
 library(JGR)
-launchJGR(jgrArgs="--withPackages=Deducer")
+launchJGR(jgrArgs="--withPackages=DeducerSpatial")
 ```
 
 To build from this repository
